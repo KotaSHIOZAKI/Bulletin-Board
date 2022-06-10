@@ -1,0 +1,79 @@
+{% extends 'shiozaki/base.html' %}
+
+{% load static %}
+
+<!-- タイトル -->
+{% block title %}掲示板一覧{% endblock %}
+
+<!-- コンテンツ -->
+{% block contents %}
+<section class="page-section portfolio" id="portfolio">
+    <div class="container">
+        <div class="row">
+            <div class="my-div-style">
+                {% if user.is_authenticated %}
+                <div class="clearfix">
+                    <a href="{% url 'shiozaki:board-create' %}" class="btn btn-primary float-right">
+                        新規作成
+                    </a>
+                </div>
+                {% endif %}
+
+                {% for thread in thread_list %}
+                <div class="post-preview">
+                    <a href="{% url 'shiozaki:board-detail' thread.pk %}">
+                        <table>
+                            <tr>
+                                <td><h1>{{ thread.title }}</h1></td>
+                                <td><h6>by {{ thread.user }}</h6></td>
+                            </tr>
+                            <tr>
+                                <td><h5>{{ thread.created_at|date }}</h5></td>
+                            </tr>
+                        </table>
+                    </a>
+                </div>
+                {% empty %}
+                <p>掲示板がありません。</p>
+                {% endfor %}
+
+                <!-- ページネーション処理 -->
+                {% if is_paginated %}
+                <ul class="pagination">
+                    <!-- 前ページへのリンク -->
+                    {% if page_obj.has_previous %}
+                    <li class="page-item">
+                        <a href="?page={{ page.obj.previous_page_number }}" class="page-link">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+                    {% endif %}
+
+                    <!-- ページ数表示 -->
+                    {% for page_num in page_obj.paginator.page_range %}
+                        {% if page_obj.number == page_num %}
+                        <li class="page-item active">
+                            <a href="#" class="page-link">{{ page_num }}</a>
+                        </li>
+                        {% else %}
+                        <li class="page-item">
+                            <a href="?page={{ page_num }}" class="page-link">{{ page_num }}</a>
+                        </li>
+                        {% endif %}
+                    {% endfor %}
+                    
+                    <!-- 前ページへのリンク -->
+                    {% if page_obj.has_next %}
+                    <li class="page-item">
+                        <a href="?page={{ page.obj.next_page_number }}" class="page-link">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+                    {% endif %}
+                </ul>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

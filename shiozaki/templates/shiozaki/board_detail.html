@@ -1,0 +1,78 @@
+{% extends 'shiozaki/base.html' %}
+
+{% load static %}
+
+<!-- タイトル -->
+{% block title %}掲示板詳細{% endblock %}
+
+<!-- コンテンツ -->
+{% block contents %}
+<section class="page-section portfolio" id="portfolio">
+    <!-- 掲示板 -->
+    <div class="container">
+        <div class="row">
+            <div class="my-div-style">
+
+                {% if object.user == user %}
+                <a href="{% url 'shiozaki:board-update' object.pk %}" class="btn btn-success mt-5 mb-3">編集</a>
+                <a href="{% url 'shiozaki:board-delete' object.pk %}" class="btn btn-danger mt-5 mb-3">削除</a>
+                {% endif %}
+
+                <div class="board-box">
+                    <table>
+                        <tr>
+                            <td>
+                                <h1>{{ object.title }}</h1>
+                            </td>
+                            <td>
+                                <h6>作成日時：{{ object.created_at|date }}  更新日時：{{ object.updated_at|date }}</h6>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">
+                                <p>{{ object.content|linebreaksbr }}</p>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+
+                <hr>
+                {% if user.is_authenticated %}
+                <a href="{% url 'shiozaki:comment-create' object.pk %}" class="btn btn-primary mt-5 mb-3">コメントを送信する</a>
+                {% endif %}
+
+                <!-- foreachでコメントを表示 -->
+                {% for comment in object.comments %}
+                {% if object.pk == comment.title %}
+                <div class="comment-box">
+                    <table>
+                        <tr>
+                            <td>
+                                <strong>{{ comment.user }}</strong>
+                            </td>
+                            <td>
+                                {{ comment.updated_at }}
+                            </td>
+                            <!-- <td rowspan="2"> -->
+                                <!-- if user == comment.user -->
+                                <!-- <a href="" class="btn btn-success mt-5 mb-3">編集</a> -->
+                                <!-- <a href="" class="btn btn-danger mt-5 mb-3">削除</a> -->
+                                <!-- endif -->
+                            <!-- </td> -->
+                        </tr>
+                        <tr>
+                            <td colspan="2">
+                                {{ comment.content }}
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <!-- コメント -->
+</section>
+{% endblock %}

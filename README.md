@@ -1,2 +1,2 @@
-# Bulletin-Board
-My first Django project
+# GroupB
+グループ開発B
